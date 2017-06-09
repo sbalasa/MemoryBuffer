@@ -38,6 +38,9 @@ FILE = "/logs/debug.log"
 FILESIZE = 1024 * 1024 * 200 # 200MB
 
 def Singleton(cls):
+    """
+    Singleton Class representing a in memory buffer used to log debug messages.
+    """
     instances = {}
     def getinstance():
         if cls not in instances:
@@ -56,50 +59,78 @@ class MemoryBuffer(object):
         self.mm = 'Empty Buffer'
 
     def enable(self):
-        self.enabled = True
-        self._generateFile()
-        self.fd = open(FILE, 'r+')
-        self.mm = mmap.mmap(self.fd.fileno(), 0)
-
-    def _generateFile(self):
-        with open(FILE, 'wb') as f:
-            f.write('\0' * FILESIZE)
-            f.close()
+        """
+        Function to enable Memory Buffer
+        """
+        try:
+            with open(FILE, 'wb+') as f:
+                f.truncate(BUFFERSIZE)
+            self.enabled = True
+            self.fd = open(FILE, 'r+')
+            self.mm = mmap.mmap(self.fd.fileno(), 0)
+        except Exception as e:
+            print 'Error: Unable to enable Memory Buffer'
+            print e
 
     def setLevel(self, level):
+        """
+        Function to set the levels in Memory Buffer either INFO or DEBUG
+        """
         if level in ['INFO', 'DEBUG']:
             self.level = level
 
     def close(self):
+        """
+        Function to close the File descriptor & Memory Buffer
+        """
         self.mm.close()
         self.fd.close()
         self.enabled = False
 
     def tellBufferPosition(self):
+        """
+        Function to show the current byte position pointed in Memory Buffer
+        """
         return self.pos
 
     def printBuffer(self):
-        if self.pos <= self.mm.size():
+        """
+        Function to print the entire space of used Memory Buffer
+        """
+        if self.enabled and self.pos <= self.mm.size()-1:
             print self.mm[:self.pos]
 
     def info(self, data):
-        if self.enabled and self.level == 'INFO':
-            self._writeBuffer(self.level + ' ' + str(data))
+        """
+        Function to log info messages into Memory Buffer
+        """
+        if self.enabled:
+            _data = "%s %s" % (self.level, data)
+            self._writeBuffer(_data)
 
     def debug(self, data):
+        """
+        Function to log debug messages into Memory Buffer
+        """
         if self.enabled and self.level == 'DEBUG':
-            self._writeBuffer(self.level + ' ' + str(data))
+            _data = "%s %s" % (self.level, data)
+            self._writeBuffer(_data)
 
     def _writeBuffer(self, data):
-        if self.pos == self.mm.size(): #Automatically flush after reaching end
-            self.flushBuffer()
+        if self.pos >= self.mm.size()-1:  # Circular Buffer
             self.pos = 0
-        _data = time.asctime() + ' ' + str(self.name) + ' ' + str(data) + '\n'
+        _data = "%s %s %s\n" % (time.asctime(), self.name, data)
         end = self.pos + len(_data)
-        self.mm[self.pos:end] = _data
+        try:
+            self.mm[self.pos:end] = _data
+        except IndexError:
+            pass
         self.pos = end
 
     def flushBuffer(self):
+        """
+        Function to flush the buffer into the file.
+        """
         self.mm.flush()
         self.pos = 0
 
