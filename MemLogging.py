@@ -1,8 +1,7 @@
 """
 MemLogging Module is responsible for logging in System for debugging purposes.
 
-This module will let you write debug messages into memory buffer and 
-flushes automatically to a specified file once its full.
+This module will let you write debug messages into a 200MB memory buffer which is Circular.
 
 Eg:
     from MemLogging import instrument, logger
