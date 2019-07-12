@@ -3,8 +3,8 @@
 This module will let you write debug messages into a 200MB memory buffer which is Circular..
 
 Eg:
+    
     from Memlogging import instrument, logger
-
     logger.enable()
     logger.name = __name__
     logger.info("This is my info message")
