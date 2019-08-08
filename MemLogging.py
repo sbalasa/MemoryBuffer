@@ -139,6 +139,7 @@ def instrument(func):
     @wraps(func)
     def innerFunc(*args, **kwargs):
         """inner function in the decorator"""
+        logger.setLevel('DEBUG')
         logger.debug('Entering -> {}'.format(func.func_name))
         start = time.time()
         return_value = func(*args, **kwargs)
