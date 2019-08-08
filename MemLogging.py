@@ -33,8 +33,8 @@ import mmap
 
 from functools import wraps
 
-FILE = "/logs/debug.log"
-FILESIZE = 1024 * 1024 * 200 # 200MB
+FILE = "/tmp/debug.log"
+BUFFERSIZE = 1024 * 1024 * 200 # 200MB
 
 def Singleton(cls):
     """
