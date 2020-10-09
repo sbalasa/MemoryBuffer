@@ -30,7 +30,6 @@ Eg:
 import time
 import mmap
 
-from pprint import pprint
 from functools import wraps
 
 FILE = "/tmp/debug.log"
