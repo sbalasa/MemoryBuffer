@@ -1,6 +1,6 @@
 # MemoryBuffer
 
-This module will let you write debug messages into a 200MB memory buffer which is Circular..
+This module will let you write debug messages into a 500MB memory buffer which is Circular..
 
 Eg:
     
