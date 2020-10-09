@@ -133,7 +133,7 @@ class MemoryBuffer(object):
         """
         Function to flush the buffer into the file.
         """
-        self.mm = ""
+        self.mm.flush()
         self.pos = 0
 
 
