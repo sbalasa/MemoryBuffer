@@ -23,5 +23,5 @@ Eg:
 # To flush the buffer onto a file
     logger.flushBuffer()
 
-#Finally close the logger
+# Finally close the logger
     logger.close()
