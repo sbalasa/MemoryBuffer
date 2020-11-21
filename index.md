@@ -1,37 +1,27 @@
-## Welcome to GitHub Pages
+# MemoryBuffer
 
-You can use the [editor on GitHub](https://github.com/sbalasa/MemoryBuffer/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+This module will let you write debug messages into a 500MB memory buffer which is Circular..
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+Eg:
+    
+    from Memlogging import instrument, logger
+    logger.enable()
+    logger.name = __name__
+    logger.info("This is my info message")
 
-### Markdown
+    logger.setLevel('DEBUG')
+    logger.debug("This is my debug message")
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+    @instrument
+    def my_function():
+        logger.info('Inside my_function')
+        return True
 
-```markdown
-Syntax highlighted code block
+# To Print Buffer
+    logger.printBuffer()
 
-# Header 1
-## Header 2
-### Header 3
+# To flush the buffer onto a file
+    logger.flushBuffer()
 
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/sbalasa/MemoryBuffer/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+# Finally close the logger
+    logger.close()
