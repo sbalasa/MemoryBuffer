@@ -4,7 +4,7 @@ This module will let you write debug messages into a 500MB memory buffer which i
 
 Eg:
     
-    from Memlogging import instrument, logger
+    from MemLogging import instrument, logger
     logger.enable()
     logger.name = __name__
     logger.info("This is my info message")
