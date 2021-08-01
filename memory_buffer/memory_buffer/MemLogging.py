@@ -23,7 +23,10 @@ Eg:
 # To flush the buffer onto a file
     logger.flushBuffer()
 
-#Finally close the logger
+# To modify the buffer size in MB
+    logger.updateBufferSize(1000)
+
+# Finally close the logger
     logger.close()
 """
 
@@ -33,7 +36,8 @@ import mmap
 from functools import wraps
 
 FILE = "/tmp/debug.log"
-BUFFERSIZE = 1024 * 1024 * 500  # 500MB
+DEFAULTSIZE = 500
+BUFFERSIZE = 1024 * 1024 * DEFAULTSIZE  # 500MB
 
 
 def Singleton(cls):
@@ -61,7 +65,7 @@ class MemoryBuffer(object):
 
     def enable(self):
         """
-        Function to enable Memory Buffer
+        Method to enable Memory Buffer
         """
         try:
             with open(FILE, "wb+") as f:
@@ -75,14 +79,14 @@ class MemoryBuffer(object):
 
     def setLevel(self, level):
         """
-        Function to set the levels in Memory Buffer either INFO or DEBUG
+        Method to set the levels in Memory Buffer either INFO or DEBUG
         """
         if level in ["INFO", "DEBUG"]:
             self.level = level
 
     def close(self):
         """
-        Function to close the File descriptor & Memory Buffer
+        Method to close the File descriptor & Memory Buffer
         """
         self.mm.close()
         self.fd.close()
@@ -90,20 +94,20 @@ class MemoryBuffer(object):
 
     def tellBufferPosition(self):
         """
-        Function to show the current byte position pointed in Memory Buffer
+        Method to show the current byte position pointed in Memory Buffer
         """
         return self.pos
 
     def printBuffer(self):
         """
-        Function to print the entire space of used Memory Buffer
+        Method to print the entire space of used Memory Buffer
         """
         if self.enabled and self.pos <= self.mm.size() - 1:
             print(self.mm[: self.pos])
 
     def info(self, data):
         """
-        Function to log info messages into Memory Buffer
+        Method to log info messages into Memory Buffer
         """
         if self.enabled:
             _data = "%s %s" % (self.level, data)
@@ -111,7 +115,7 @@ class MemoryBuffer(object):
 
     def debug(self, data):
         """
-        Function to log debug messages into Memory Buffer
+        Method to log debug messages into Memory Buffer
         """
         if self.enabled and self.level == "DEBUG":
             _data = "%s %s" % (self.level, data)
@@ -130,10 +134,17 @@ class MemoryBuffer(object):
 
     def flushBuffer(self):
         """
-        Function to flush the buffer into the file.
+        Method to flush the buffer into the file.
         """
         self.mm.flush()
         self.pos = 0
+
+    def updateBufferSize(self, buff_size):
+        """
+        Method to update the buffer size.
+        """
+        global DEFAULTSIZE
+        DEFAULTSIZE = buff_size
 
 
 def instrument(func):
@@ -144,12 +155,13 @@ def instrument(func):
     def innerFunc(*args, **kwargs):
         """inner function in the decorator"""
         logger.setLevel("DEBUG")
-        logger.debug("Entering -> {}".format(func.__name__))
+        logger.debug(f"Entering -> {func.__name__}")
         start = time.time()
         return_value = func(*args, **kwargs)
         end = time.time()
-        logger.debug("Exiting <- {} after {} " "seconds".format(func.__name__, end - start))
+        logger.debug(f"Exiting <- {func.__name__} after {end - start} seconds")
         return return_value
+
     return innerFunc
 
 

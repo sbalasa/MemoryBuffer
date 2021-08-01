@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "memory_buffer"
+version = "0.0.1"
+description = "This module will let you write debug messages into a 500MB memory buffer which is Circular."
+authors = ["Santhosh Balasa <santhosh.kbr@gmail.com>"]
+homepage = "https://github.com/sbalasa/MemoryBuffer.git"
+include = [
+    "LICENSE.md",
+]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
